@@ -29,7 +29,7 @@ def data_process(df_name, is_train=True):
     df['birth_date'] = df.apply(date2age, axis=1)
     df['work_rate_att'] = df.apply(level2int, args=('work_rate_att',), axis=1)
     df['work_rate_def'] = df.apply(level2int, args=('work_rate_def',), axis=1)
-    df['gk'] = df['gk'] * 4
+    df['gk'] = df['gk'] * pos_cnt
     df['max_val'] = df.apply(max_val, axis=1)
     if is_train:
         pos_list = pos_list + ['y']
@@ -37,6 +37,11 @@ def data_process(df_name, is_train=True):
 
     df = df.drop(pos_list, axis=1)
     df.to_csv(dataset_path + 'Processed' + df_name + '.csv', index=False)
+
+    if is_train:
+        plt.subplots(figsize=(50, 50))
+        sns.heatmap(df.corr(), xticklabels=True, yticklabels=True, annot=True, vmax=1, square=True, cmap="RdBu_r")
+        plt.savefig(dataset_path + 'train_corr.jpg', dpi=100)
 
 
 data_process('train')
